@@ -11,17 +11,9 @@ app.get('/students', (req, res) => {
 });
 
 app.post("/students", (req, res) => {
-    let study = req.body
+    students.push("sarah").req.body
 });
 
-app.get("/students", (req, res) => {
-    const query = req.query;
-    console.log(query);
-
-    res.json({
-        status: "OK",
-    });
-});
 
 
 
