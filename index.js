@@ -11,13 +11,9 @@ app.get('/students', (req, res) => {
 });
 
 app.post("/students", (req, res) => {
-    students.push("sarah").req.body
+    const body = req.body
+    students.push(body.name);
 });
-
-
-
-
-
 
 
 app.listen(PORT, () => {
