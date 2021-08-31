@@ -63,7 +63,10 @@ app.post('/heroes', (req, res) => {
 })
 
 function transformName(req, res, next) {
-
+    if (req.body.name === undefined) {
+        console.log("add's name")
+    }
+    req.body.toLowerCase()
     next();
 }
 
