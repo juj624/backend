@@ -51,9 +51,9 @@ app.get('/heroes/:name', (req, res) => {
 })
 
 app.get('/heroes/:name/power', (req, res) => {
-    const hero = superHeros.filter(superHeros => superHeros.name.toLowerCase() === req.params.name)
-    console.log(hero)
-    res.json(hero[0].power)
+    const heros = superHeros.filter(superHero => superHero.name.toLowerCase() === req.params.name.toLowerCase())
+    // console.log(hero)
+    res.json(heros.map(hero => hero.power))
 });
 
 app.post('/heroes', transformName, (req, res) => {
@@ -71,10 +71,14 @@ function transformName(req, res, next) {
     next();
 }
 
-app.patch('/heroes/:name/powers', (req, res) => {
-    const powerMode = superHeros.find(element => element > power);
-    superHeros.push(powerMore);
-    res.json({ message: "Pouvoir ajouté !" })
+app.patch('/heroes/:name/power', (req, res) => {
+    const powerMode = superHeros.find(pdf => pdf.name.toLowerCase() === req.params.name.toLowerCase())
+    if (powerMode) {
+        const bodyPower = req.body.power;
+        powerMode.power.push(bodyPower);
+        res.json({ message: "Pouvoir ajouté !" })
+    }
+
 })
 
 
