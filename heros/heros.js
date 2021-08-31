@@ -32,25 +32,29 @@ var superHeros = [{
 
 
 // middleware
-function mid(req, res, next) {
+function debug(req, res, next) {
     console.log("Je fais un console.log à chaque requête");
     next();
 }
 // j'utilise mon middleware
-app.use(mid);
+app.use(debug);
 
 // route
 app.get('/heroes', (req, res) => {
-    res.json({
-        name: heroes.name,
-    })
+    res.json(superHeros)
 })
 
 app.get('/heroes/:name', (req, res) => {
-    res.json({
-
-    })
+    res.json(
+        superHeros.filter(superHeros => superHeros.name.toLowerCase() === req.params.name)
+    )
 })
+
+app.get('/heroes/:name/power', (req, res) => {
+    res.json(
+        superHeros.filter(bPower => bPower[0] === req.params.power)
+    )
+});
 
 
 app.listen(PORT, () => {
