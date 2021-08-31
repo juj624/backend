@@ -56,19 +56,28 @@ app.get('/heroes/:name/power', (req, res) => {
     res.json(hero[0].power)
 });
 
-app.post('/heroes', (req, res) => {
+app.post('/heroes', transformName, (req, res) => {
     const newHero = req.body
-    res.json([...superHeros, newHero])
-    console.log("Ok, héros ajouté");
+    superHeros.push(newHero);
+    res.json({ message: "Ok, héros ajouté" })
 })
 
 function transformName(req, res, next) {
     if (req.body.name === undefined) {
         console.log("add's name")
     }
-    req.body.toLowerCase()
+    const name = req.body.name.toLowerCase()
+    console.log(name)
     next();
 }
+
+app.patch('/heroes/:name/powers', (req, res) => {
+    const powerMode = superHeros.find(element => element > power);
+    superHeros.push(powerMore);
+    res.json({ message: "Pouvoir ajouté !" })
+})
+
+
 
 
 app.listen(PORT, () => {
