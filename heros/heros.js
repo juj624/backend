@@ -51,10 +51,21 @@ app.get('/heroes/:name', (req, res) => {
 })
 
 app.get('/heroes/:name/power', (req, res) => {
-    res.json(
-        superHeros.filter(bPower => bPower[0] === req.params.power)
-    )
+    const hero = superHeros.filter(superHeros => superHeros.name.toLowerCase() === req.params.name)
+    console.log(hero)
+    res.json(hero[0].power)
 });
+
+app.post('/heroes', (req, res) => {
+    const newHero = req.body
+    res.json([...superHeros, newHero])
+    console.log("Ok, héros ajouté");
+})
+
+function transformName(req, res, next) {
+
+    next();
+}
 
 
 app.listen(PORT, () => {
