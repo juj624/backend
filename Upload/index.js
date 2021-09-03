@@ -8,7 +8,7 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.static('public'));
 
-
+const userspeople = ["pierro", "vincent"]
 
 app.get('/', (req, res) => {
     res.json({ status: 'ok', });
@@ -20,7 +20,12 @@ app.post('/user', upload.single('image'), (req, res) => {
     console.log(name);
     res.json({ status: 'ok', });
 });
-
+// integration de la liste
+app.get('/user/userspeople', (req, res) => {
+    console.log("you add a new user ! great")
+    // const listUers = listUers.map(req.params.userspeople)
+    res.json(userspeople);
+});
 
 
 app.listen(3000, () => {
