@@ -6,7 +6,12 @@ const userRouter = require("./routes/userRouter");
 const controllersUser = require("./controllers/controllersUser")
 
 app.use(express.json())
+// debut du validator
+
+// fin du validator
+
 app.use("/users", userRouter);
+
 
 
 app.get('/', (_req, res) => {
