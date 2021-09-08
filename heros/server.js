@@ -9,30 +9,7 @@ const mongoose = require("mongoose");
 
 app.use(express.json());
 
-var superHeros = [{
-    name: "Iron Man",
-    power: ["money"],
-    color: "red",
-    isAlive: true,
-    age: 46,
-    image: "https://blog.fr.playstation.com/tachyon/sites/10/2019/07/unnamed-file-18.jpg?resize=1088,500&crop_strategy=smart"
-},
-{
-    name: "Thor",
-    power: ["electricty", "worthy"],
-    color: "blue",
-    isAlive: true,
-    age: 300,
-    image: "https://www.bdfugue.com/media/catalog/product/cache/1/image/400x/17f82f742ffe127f42dca9de82fb58b1/9/7/9782809465761_1_75.jpg"
-},
-{
-    name: "Daredevil",
-    power: ["blind"],
-    color: "red",
-    isAlive: false,
-    age: 30,
-    image: "https://aws.vdkimg.com/film/2/5/1/1/251170_backdrop_scale_1280xauto.jpg"
-}];
+
 // Connexion à MongoDB
 // On accède à la valeur DB qui se trouve dans le config.env
 // Dans le string de connection à MongoDB, on remplace le mot de passe et le nom de la base de données
@@ -57,7 +34,7 @@ const superHerosSchema = new mongoose.Schema({
     age: Number,
     image: String,
 });
-const hero = mongoose.model("hero", superHerosSchema);
+const Hero = mongoose.model("heroes_list", superHerosSchema);
 
 // middleware
 function debug(req, res, next) {
@@ -69,7 +46,7 @@ app.use(debug);
 
 // route
 app.get('/heroes', async (_req, res) => {
-    const hero = await hero.find()
+    const hero = await Hero.find()
     res.json({
         message: 'ok',
         data: hero,
@@ -77,40 +54,53 @@ app.get('/heroes', async (_req, res) => {
 });
 
 app.get('/heroes/:name', async (req, res) => {
-    const hero = await hero.findOne()
+    const hero = await Hero.findOne({ name: req.params.name })
     res.json(
-        hero.filter(hero => hero.name.toLowerCase() === req.params.name)
-    )
+        hero
+    );
 })
 
-app.get('/heroes/:name/power', (req, res) => {
-    const heros = superHeros.filter(superHero => superHero.name.toLowerCase() === req.params.name.toLowerCase())
-    // console.log(hero)
-    res.json(heros.map(hero => hero.power))
+app.get('/heroes/:name/power', async (req, res) => {
+    const hero = await Hero.findOne({ name: req.params.name })
+    res.json(
+        hero.power
+    )
 });
 
-app.post('/heroes', transformName, (req, res) => {
-    const newHero = req.body
-    superHeros.push(newHero);
-    res.json({ message: "Ok, héros ajouté" })
-})
+app.post('/heroes', async (req, res) => {
+    const body = await Hero.create(req.body);
+    res.json({
+        message: 'ok',
+        data: body,
+    });
+});
 
-function transformName(req, res, next) {
-    if (req.body.name === undefined) {
-        console.log("add's name")
-    }
-    const name = req.body.name.toLowerCase()
-    console.log(name)
-    next();
-}
 
-app.patch('/heroes/:name/power', (req, res) => {
-    const powerMode = superHeros.find(pdf => pdf.name.toLowerCase() === req.params.name.toLowerCase())
-    if (powerMode) {
-        const bodyPower = req.body.power;
-        powerMode.power.push(bodyPower);
-        res.json({ message: "Pouvoir ajouté !" })
+
+// function transformName(req, res, next) {
+//     if (req.body.name === undefined) {
+//         console.log("add's name")
+//     }
+//     const name = req.body.name.toLowerCase()
+//     console.log(name)
+//     next();
+// }
+
+app.patch('/heroes/:name/power', async (req, res) => {
+    const power = req.body.power
+    const hero = await Hero.updateOne({ name: new RegExp(req.params.name, 'i') }, { $push: { power: power } })
+
+    if (hero) {
+        res.json({
+            status: 'ok',
+            message: 'power is updated !'
+        });
     }
+    // if (powerMode) {
+    //     const bodyPower = req.body.power;
+    //     powerMode.power.push(bodyPower);
+    //     res.json({ message: "Pouvoir ajouté !" })
+    // }
 
 })
 
